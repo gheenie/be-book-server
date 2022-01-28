@@ -2,7 +2,7 @@
 
 Today we will be building our very first **http** server!
 
-_Remember to use `fs` to read the data files!_ (And please use the standard callback version of the `fs` library for this sprint!)
+_Remember to use `fs` to read the data files!_
 
 ## Challenges
 
@@ -33,4 +33,4 @@ _Remember to use `fs` to read the data files!_ (And please use the standard call
 
 10. Add error-handling to your GET `/api/books` endpoint. Think about what should happen if an invalid query is used, e.g. `?fiction=banana`. What status code should be sent?
 
-10. Research the MVC (Model-View-Controller) pattern, [this article](https://www.freecodecamp.org/news/model-view-controller-mvc-explained-through-ordering-drinks-at-the-bar-efcba6255053/) is a good place to start. Then try to refactor your server to have separate functions for your **models** and **controllers** (we don't have "views" at the moment)
+11. Research the MVC (Model-View-Controller) pattern, [this article](https://www.freecodecamp.org/news/model-view-controller-mvc-explained-through-ordering-drinks-at-the-bar-efcba6255053/) is a good place to start. Then try to refactor your server to have separate functions for your **models** and **controllers** (we don't have "views" at the moment)
