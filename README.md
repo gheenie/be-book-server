@@ -2,7 +2,7 @@
 
 Today we will be building our very first **http** server!
 
-_Remember to use `fs` to read the data files!_
+_Remember to use `fs/promises` to read the data files!_
 
 ## Challenges
 
