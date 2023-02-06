@@ -113,6 +113,9 @@ const server = http.createServer((request, response) => {
             response.setHeader('Content-Type', 'application/json');
             response.statusCode = 201;
             const newBook = JSON.parse(body)
+            const test = new Book(newBook.bookId, newBook.bookTitle, newBook.authorId, newBook.isFiction);
+            console.log(test);
+
             const bookProperties = ['bookId', 'bookTitle', 'authorId', 'isFiction'];
             const dontHaveAllBookProperties = bookProperties.some((bookProperty) => !newBook.hasOwnProperty(bookProperty));
 
@@ -173,4 +176,16 @@ server.listen(9090, (err) => {
   else console.log('Server listening on port: 9090');
 });
 
+class Book {
+  #bookId = undefined;
+  #bookTitle = undefined;
+  #authorId = undefined;
+  #isFiction = undefined;
 
+  constructor(bookId, bookTitle, authorId, isFiction) {
+    this.#bookId = bookId;
+    this.#bookTitle = bookTitle;
+    this.#authorId = authorId;
+    this.#isFiction = isFiction;
+  }
+}
