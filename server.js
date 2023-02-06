@@ -1,11 +1,3 @@
-// 1. Create a new file called `server.js` and using Node's `http` module create a web server that responds with a status 200 and a greeting when it receives a GET request on the path `/api` (e.g. `{ message: "Hello! }`)
-// 2. Add a GET `/api/books` endpoint that responds with a status 200 and a JSON object, that has a key of `books` with a value of the array of books from the `./data/books.json` file.
-//Add a GET /api/authors endpoint that responds with a status 200 and a JSON object, that has a key of authors with a value of the array of authors from the ./data/authors.json file.
-// 5. Add a POST `/api/books` endpoint that accepts a book object on the body of the request and adds the book to the `./data/books.json` file. The endpoint should respond with the newly created book object. Additional considerations:
-
-//    - How could you ensure that the `bookId` that is created is unique?
-//    - What status code should the server respond with?
-
 const http = require('http')
 const fs = require('fs/promises')
 
@@ -113,8 +105,8 @@ const server = http.createServer((request, response) => {
             response.setHeader('Content-Type', 'application/json');
             response.statusCode = 201;
             const newBook = JSON.parse(body)
-            const test = new Book(newBook.bookId, newBook.bookTitle, newBook.authorId, newBook.isFiction);
-            console.log(test);
+            // const test = new Book(newBook.bookId, newBook.bookTitle, newBook.authorId, newBook.isFiction);
+            // console.log(test);
 
             const bookProperties = ['bookId', 'bookTitle', 'authorId', 'isFiction'];
             const dontHaveAllBookProperties = bookProperties.some((bookProperty) => !newBook.hasOwnProperty(bookProperty));
