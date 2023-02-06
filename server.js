@@ -20,16 +20,45 @@ const server = http.createServer((request, response) => {
     }
 
     if (url === '/api/books' && method === 'GET') {
-      response.setHeader('Content-Type', 'application/json');
-      response.statusCode = 200;
-      fs.readFile(`${__dirname}/data/books.json`, 'utf8')
-      .then((data)=> {
-          const books = JSON.parse(data)
-          const body = JSON.stringify({books})
-          response.write(body)
-          response.end();
-      })
+        response.setHeader('Content-Type', 'application/json');
+        response.statusCode = 200;
+        fs.readFile(`${__dirname}/data/books.json`, 'utf8')
+        .then((data)=> {
+            const books = JSON.parse(data)
+            const body = JSON.stringify({books})
+            response.write(body)
+            response.end();
+        })
     }
+
+    if (/\/api\/books\?/.test(url) && method === 'GET') {
+        response.setHeader('Content-Type', 'application/json');
+        response.statusCode = 200;
+        fs.readFile(`${__dirname}/data/books.json`, 'utf8')
+        .then((data)=> {
+            let fiction = url.substring(19) 
+            if (fiction === 'true') {
+                fiction = true
+            } else if (fiction === 'false') {
+                fiction = false
+            } else {
+                throw new Error ('no such query')
+            }
+            const books = JSON.parse(data)
+            const fitleredBooks = books.filter(element => element.isFiction === fiction)
+            const body = JSON.stringify({fitleredBooks})
+            console.log(fiction);
+            response.write(body)
+            response.end();
+        })
+        .catch((err) => {
+            console.log(err)
+            response.statusCode = 404
+            response.write(JSON.stringify('Unable to complete request'))
+            response.end()
+        })
+    }
+
 
     if (url === '/api/authors' && method === 'GET') {
       response.setHeader('Content-Type', 'application/json');
@@ -134,14 +163,4 @@ server.listen(9090, (err) => {
   else console.log('Server listening on port: 9090');
 });
 
-//   req.on('end', () => {
-//     const newPet = JSON.parse(body);
-//     fs.readFile(`${__dirname}/data/pets.json`).then((petData) => {
-//       const pets = JSON.parse(petData);
-//       const newPets = [...pets, newPet];
-//       return fs.writeFile(`${__dirname}/data/pets.json`, JSON.stringify(newPets, null, 2));
-//     }).then(() => {
-//       response.writeHead(201,{'Content-Type': 'application/json'} );
-//       response.end(JSON.stringify({ newPet }));
-//     })
-//   })
+
