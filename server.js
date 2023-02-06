@@ -59,7 +59,6 @@ const server = http.createServer((request, response) => {
         })
     }
 
-
     if (url === '/api/authors' && method === 'GET') {
       response.setHeader('Content-Type', 'application/json');
       response.statusCode = 200;
@@ -105,17 +104,28 @@ const server = http.createServer((request, response) => {
     if (url === '/api/books' && method === 'POST') {
         let body = '';
         let books = ''
+
         request.on('data', (packet) => {
             body += packet.toString();
         });
+
         request.on('end', () => {
             response.setHeader('Content-Type', 'application/json');
             response.statusCode = 201;
             const newBook = JSON.parse(body)
+            const bookProperties = ['bookId', 'bookTitle', 'authorId', 'isFiction'];
+            const dontHaveAllBookProperties = bookProperties.some((bookProperty) => !newBook.hasOwnProperty(bookProperty));
 
-            fs.readFile(`${__dirname}/data/books.json`, 'utf8')
+            if (dontHaveAllBookProperties) {
+              response.statusCode = 409;
+              response.write( JSON.stringify('The object is missing some properties.') );
+              response.end();
+            }
+
+            fs.readFile(`${__dirname}/data/newbooks.json`, 'utf8')
             .then((data)=> {
                 books = JSON.parse(data)
+
                 const hasSameId = books.some((book) => book.bookId === newBook.bookId)
                 if (!hasSameId) {
                     books.push(newBook)
