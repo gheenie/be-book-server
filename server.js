@@ -44,8 +44,8 @@ const server = http.createServer((request, response) => {
       })
     }
 
-    const urlIsBookId = /\/api\/books\//.test(url);
-
+    const urlIsBookId = /\/api\/books\/\d+$/.test(url);
+    
     if (urlIsBookId && method === 'GET') {
       response.setHeader('Content-Type', 'application/json');
       response.statusCode = 200;
@@ -90,7 +90,33 @@ const server = http.createServer((request, response) => {
                 response.end()
             })
         });
-      }
+    }
+
+    const urlIsBookAuthor = /\/api\/books\/\d+\/author/.test(url);
+    
+    if (urlIsBookAuthor && method === 'GET') {
+      response.setHeader('Content-Type', 'application/json');
+      response.statusCode = 200;
+      let book = {};
+
+      fs.readFile(`${__dirname}/data/books.json`, 'utf8')
+      .then((data)=> {
+        const books = JSON.parse(data)
+        const bookId = url.slice(11, -7);
+        // Iterate through books for more accuracy.
+        book = books[bookId - 1];
+
+        return fs.readFile(`${__dirname}/data/authors.json`, 'utf8');
+      })
+      .then((data)=> {
+        const authors = JSON.parse(data)
+        const author = authors[book.authorId - 1];
+  
+        const body = JSON.stringify({author})
+        response.write(body)
+        response.end();
+      })
+    }
 });
   
   server.listen(9090, (err) => {
