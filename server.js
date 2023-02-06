@@ -54,13 +54,23 @@ const server = http.createServer((request, response) => {
       .then((data)=> {
         const books = JSON.parse(data)
         const bookId = url.substring(11);
+
+        const hasSameId = books.some((book) => book.bookId === bookId)
+        if (!hasSameId) {
+            throw new Error('No existing book.');
+        }
+
         // Iterate through books for more accuracy.
         const book = books[bookId - 1];
         const body = JSON.stringify({book})
         response.write(body)
         response.end();
       })
-
+      .catch((err) => {
+        response.statusCode = 404;
+        response.write(JSON.stringify('Your requested book does not exist.'));
+        response.end();
+      });
     }
 
     if (url === '/api/books' && method === 'POST') {
@@ -73,16 +83,16 @@ const server = http.createServer((request, response) => {
             response.setHeader('Content-Type', 'application/json');
             response.statusCode = 201;
             const newBook = JSON.parse(body)
-            fs.readFile(`${__dirname}/data/newbooks.json`, 'utf8')
-            .then((data)=> {
 
-                const parsedBooks = JSON.parse(data)
-                const hasSameId = parsedBooks.some((parsedBook) => parsedBook.bookId === newBook.bookId)
+            fs.readFile(`${__dirname}/data/books.json`, 'utf8')
+            .then((data)=> {
+                books = JSON.parse(data)
+                const hasSameId = books.some((book) => book.bookId === newBook.bookId)
                 if (!hasSameId) {
-                    parsedBooks.push(newBook)
+                    books.push(newBook)
                 }
-                books = parsedBooks
-                return fs.writeFile(`${__dirname}/data/newbooks.json`, JSON.stringify(parsedBooks), () => {})
+                
+                return fs.writeFile(`${__dirname}/data/newbooks.json`, JSON.stringify(books), () => {})
             })
             .then(() => {
                 const body = JSON.stringify({books})
@@ -119,10 +129,10 @@ const server = http.createServer((request, response) => {
     }
 });
   
-  server.listen(9090, (err) => {
-    if (err) console.log(err);
-    else console.log('Server listening on port: 9090');
-  });
+server.listen(9090, (err) => {
+  if (err) console.log(err);
+  else console.log('Server listening on port: 9090');
+});
 
 //   req.on('end', () => {
 //     const newPet = JSON.parse(body);
